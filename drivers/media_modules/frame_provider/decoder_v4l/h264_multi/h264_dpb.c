@@ -5423,6 +5423,7 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
     return 1;
   }
 
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "return 0\r\n");
 	return 0;
 }
 
