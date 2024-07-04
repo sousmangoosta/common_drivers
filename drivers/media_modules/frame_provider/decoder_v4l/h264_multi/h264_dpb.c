@@ -5248,63 +5248,48 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 	struct VideoParameters *p_Vid = &p_H264_Dpb->mVideo;
 	struct DecodedPictureBuffer *p_Dpb = &p_H264_Dpb->mDPB;
 
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "Entering h264_slice_header_process\r\n");
-
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set new_pic_flag\r\n");
 	new_pic_flag = (p_H264_Dpb->mVideo.dec_picture == NULL);
 
 	p_H264_Dpb->buf_alloc_fail = 0;
 	p_H264_Dpb->dpb_error_flag = 0;
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "slice prepare\r\n");
 	slice_prepare(p_H264_Dpb, &p_H264_Dpb->mDPB, &p_H264_Dpb->mVideo,
 		      &p_H264_Dpb->mSPS, &p_H264_Dpb->mSlice);
 
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check num_ref_frames\r\n");
 	if (p_Dpb->num_ref_frames != p_H264_Dpb->mSPS.num_ref_frames) {
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set num_ref_frames\r\n");
 		dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL,
 		"num_ref_frames change from %d to %d\r\n",
 			p_Dpb->num_ref_frames, p_H264_Dpb->mSPS.num_ref_frames);
 		p_Dpb->num_ref_frames = p_H264_Dpb->mSPS.num_ref_frames;
 	}
 
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check init done\r\n");
 	if (p_H264_Dpb->mDPB.init_done == 0) {
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set init dpb\r\n");
 		init_dpb(p_H264_Dpb, 0);
 	}
 
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check new_pic_flag\r\n");
+
 	if (new_pic_flag) { /* new picture */
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "is new_pic_flag\r\n");
 		dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL,
 		"check frame_num gap: cur frame_num %d pre_frame_num %d max_frmae_num %d\r\n",
 		currSlice->frame_num,
 		p_Vid->pre_frame_num,
 		p_Vid->max_frame_num);
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check recovery_point\r\n");
 		if (p_Vid->recovery_point == 0 &&
 			p_Vid->max_frame_num <= FRAME_NUM_MAX_SIZE &&
 			currSlice->frame_num != p_Vid->pre_frame_num &&
 			currSlice->frame_num !=
 			(p_Vid->pre_frame_num + 1) % p_Vid->max_frame_num) {
-      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set frame_num_gap\r\n");
 			*frame_num_gap = 1;
 		}
 
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check nal_reference_idc\r\n");
 		if (currSlice->nal_reference_idc) {
 			dpb_print(p_H264_Dpb->decoder_index,
 				PRINT_FLAG_DPB_DETAIL,
 			"nal_reference_idc not 0, set pre_frame_num(%d) to frame_num (%d)\n",
 			p_Vid->pre_frame_num, currSlice->frame_num);
-      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set pre_frame_num\r\n");
 			p_Vid->pre_frame_num = currSlice->frame_num;
 		}
 
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "decode_poc\r\n");
 		decode_poc(&p_H264_Dpb->mVideo, &p_H264_Dpb->mSlice);
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set mVideo.dec_picture\r\n");
 		p_H264_Dpb->mVideo.dec_picture = get_new_pic(p_H264_Dpb,
 						 p_H264_Dpb->mSlice.structure,
 						/*p_Vid->width, p_Vid->height,
@@ -5313,16 +5298,13 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 						 */
 						 1);
 
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set pic_mutex_lock\r\n");
 		pic_mutex_lock(p_H264_Dpb);
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check dec_picture\r\n");
 		if (p_H264_Dpb->mVideo.dec_picture) {
 			u32 offset_lo, offset_hi;
 			struct DecodedPictureBuffer *p_Dpb =
 				&p_H264_Dpb->mDPB;
 			struct StorablePicture *p =
 				p_H264_Dpb->mVideo.dec_picture;
-      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "init_picture\r\n");
 			init_picture(p_H264_Dpb, &p_H264_Dpb->mSlice,
 				p_H264_Dpb->mVideo.dec_picture);
 			/* rain */
@@ -5335,98 +5317,66 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 			p_H264_Dpb->mVideo.dec_picture->buf_spec_num  = -1;
 			p_H264_Dpb->mVideo.dec_picture->
 				colocated_buf_index = -1;
-      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "update_pic_num\r\n");
 			update_pic_num(p_H264_Dpb);
 
-      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check currSlice->structure\r\n");
 			if ((currSlice->structure == TOP_FIELD) ||
 			    (currSlice->structure == BOTTOM_FIELD)) {
-        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "is currSlice->structure\r\n");
 				/* check for frame store with same
 				 *   pic_number
 				 */
-        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check_frame_store_same_pic_num\r\n");
 				check_frame_store_same_pic_num(p_Dpb, p,
 					currSlice);
 			}
 
-      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check buf_spec_num==-1\r\n");
 			if (p_H264_Dpb->mVideo.dec_picture->buf_spec_num ==
 				-1) {
-        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "is buf_spec_num==-1\r\n");
 				p_H264_Dpb->mVideo.dec_picture->buf_spec_num =
 					v4l_get_free_buf_idx(p_H264_Dpb->vdec);
-        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check buf_spec_num < 0\r\n");
 				if (p_H264_Dpb->mVideo.dec_picture->buf_spec_num
 					< 0) {
-          dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "is buf_spec_num < 0\r\n");
 					p_H264_Dpb->buf_alloc_fail = 1;
 					p_H264_Dpb->mVideo.dec_picture->buf_spec_is_alloced = 0;
 					p_Dpb->need_put_ref = 0;
 				} else {
-          dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set buf_spec_is_alloced\r\n");
 					p_H264_Dpb->mVideo.dec_picture->buf_spec_is_alloced = 1;
 					p_Dpb->need_put_ref = 1;
 				}
 
-        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check dec_picture used_for_reference\r\n");
 				if (p_H264_Dpb->mVideo.dec_picture->
 					used_for_reference) {
-          dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "is dec_picture used_for_reference\r\n");
 					p_H264_Dpb->mVideo.dec_picture->
 						colocated_buf_index =
 						allocate_colocate_buf(
 							p_H264_Dpb);
 				}
 			}
-      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check post_picture_early\r\n");
 			if (post_picture_early(p_H264_Dpb->vdec,
 				p_H264_Dpb->mVideo.dec_picture->buf_spec_num)) {
-        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "is post_picture_early\r\n");
 				pic_mutex_unlock(p_H264_Dpb);
 				return -1;
 			}
 		}
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set pic_mutex_unlock\r\n");
 		pic_mutex_unlock(p_H264_Dpb);
 	}
 
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check buf_alloc_fail\r\n");
-	if (p_H264_Dpb->buf_alloc_fail) {
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "buf_alloc_fail !!!!!!\r\n");
-    return -1;
-  }
+	if (p_H264_Dpb->buf_alloc_fail)
+		return -1;
 
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check slice_type\r\n");
-	if (p_H264_Dpb->mSlice.slice_type == P_SLICE) {
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "slice_type is P_SLICE\r\n");
-    init_lists_p_slice(&p_H264_Dpb->mSlice);
-  }
-	else if (p_H264_Dpb->mSlice.slice_type == B_SLICE) {
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "slice_type is B_SLICE\r\n");
-    init_lists_b_slice(&p_H264_Dpb->mSlice);
-  }
-	else {
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "slice_type is I_SLICE\r\n");
-    init_lists_i_slice(&p_H264_Dpb->mSlice);
-  }
+	if (p_H264_Dpb->mSlice.slice_type == P_SLICE)
+		init_lists_p_slice(&p_H264_Dpb->mSlice);
+	else if (p_H264_Dpb->mSlice.slice_type == B_SLICE)
+		init_lists_b_slice(&p_H264_Dpb->mSlice);
+	else
+		init_lists_i_slice(&p_H264_Dpb->mSlice);
 
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "reorder_lists\r\n");
 	reorder_lists(&p_H264_Dpb->mSlice);
 
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check structure\r\n");
-	if (p_H264_Dpb->mSlice.structure == FRAME) {
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "structure is FRAME\r\n");
-    init_mbaff_lists(p_H264_Dpb, &p_H264_Dpb->mSlice);
-  }
+	if (p_H264_Dpb->mSlice.structure == FRAME)
+		init_mbaff_lists(p_H264_Dpb, &p_H264_Dpb->mSlice);
 
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check new_pic_flag\r\n");
-	if (new_pic_flag) {
-    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "return 1\r\n");
-    return 1;
-  }
+	if (new_pic_flag)
+		return 1;
 
-  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "return 0\r\n");
 	return 0;
 }
 
