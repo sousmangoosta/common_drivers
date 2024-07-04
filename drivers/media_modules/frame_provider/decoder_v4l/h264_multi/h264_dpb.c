@@ -5290,6 +5290,7 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 			*frame_num_gap = 1;
 		}
 
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check nal_reference_idc\r\n");
 		if (currSlice->nal_reference_idc) {
 			dpb_print(p_H264_Dpb->decoder_index,
 				PRINT_FLAG_DPB_DETAIL,
@@ -5298,7 +5299,9 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 			p_Vid->pre_frame_num = currSlice->frame_num;
 		}
 
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "decode_poc\r\n");
 		decode_poc(&p_H264_Dpb->mVideo, &p_H264_Dpb->mSlice);
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set mVideo.dec_picture\r\n");
 		p_H264_Dpb->mVideo.dec_picture = get_new_pic(p_H264_Dpb,
 						 p_H264_Dpb->mSlice.structure,
 						/*p_Vid->width, p_Vid->height,
@@ -5307,7 +5310,9 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 						 */
 						 1);
 
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set pic_mutex_lock\r\n");
 		pic_mutex_lock(p_H264_Dpb);
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check dec_picture\r\n");
 		if (p_H264_Dpb->mVideo.dec_picture) {
 			u32 offset_lo, offset_hi;
 			struct DecodedPictureBuffer *p_Dpb =
