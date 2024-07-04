@@ -5259,6 +5259,7 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 	slice_prepare(p_H264_Dpb, &p_H264_Dpb->mDPB, &p_H264_Dpb->mVideo,
 		      &p_H264_Dpb->mSPS, &p_H264_Dpb->mSlice);
 
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check num_ref_frames\r\n");
 	if (p_Dpb->num_ref_frames != p_H264_Dpb->mSPS.num_ref_frames) {
 		dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL,
 		"num_ref_frames change from %d to %d\r\n",
@@ -5266,7 +5267,9 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 		p_Dpb->num_ref_frames = p_H264_Dpb->mSPS.num_ref_frames;
 	}
 
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check init done\r\n");
 	if (p_H264_Dpb->mDPB.init_done == 0) {
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set init dpb\r\n");
 		init_dpb(p_H264_Dpb, 0);
 	}
 
