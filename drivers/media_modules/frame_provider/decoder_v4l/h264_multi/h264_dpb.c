@@ -5273,18 +5273,20 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 		init_dpb(p_H264_Dpb, 0);
 	}
 
-
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check new_pic_flag\r\n");
 	if (new_pic_flag) { /* new picture */
 		dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL,
 		"check frame_num gap: cur frame_num %d pre_frame_num %d max_frmae_num %d\r\n",
 		currSlice->frame_num,
 		p_Vid->pre_frame_num,
 		p_Vid->max_frame_num);
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check recovery_point\r\n");
 		if (p_Vid->recovery_point == 0 &&
 			p_Vid->max_frame_num <= FRAME_NUM_MAX_SIZE &&
 			currSlice->frame_num != p_Vid->pre_frame_num &&
 			currSlice->frame_num !=
 			(p_Vid->pre_frame_num + 1) % p_Vid->max_frame_num) {
+      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set frame_num_gap\r\n");
 			*frame_num_gap = 1;
 		}
 
