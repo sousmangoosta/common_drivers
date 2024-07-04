@@ -5388,8 +5388,11 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 		pic_mutex_unlock(p_H264_Dpb);
 	}
 
-	if (p_H264_Dpb->buf_alloc_fail)
-		return -1;
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check buf_alloc_fail\r\n");
+	if (p_H264_Dpb->buf_alloc_fail) {
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "buf_alloc_fail !!!!!!\r\n");
+    return -1;
+  }
 
 	if (p_H264_Dpb->mSlice.slice_type == P_SLICE)
 		init_lists_p_slice(&p_H264_Dpb->mSlice);
