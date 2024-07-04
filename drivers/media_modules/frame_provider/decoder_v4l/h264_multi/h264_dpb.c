@@ -5248,6 +5248,9 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 	struct VideoParameters *p_Vid = &p_H264_Dpb->mVideo;
 	struct DecodedPictureBuffer *p_Dpb = &p_H264_Dpb->mDPB;
 
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "Entering h264_slice_header_process\r\n");
+
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set new_pic_flag\r\n");
 	new_pic_flag = (p_H264_Dpb->mVideo.dec_picture == NULL);
 
 	p_H264_Dpb->buf_alloc_fail = 0;
