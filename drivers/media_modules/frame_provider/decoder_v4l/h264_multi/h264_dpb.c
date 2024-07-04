@@ -5408,10 +5408,14 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
     init_lists_i_slice(&p_H264_Dpb->mSlice);
   }
 
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "reorder_lists\r\n");
 	reorder_lists(&p_H264_Dpb->mSlice);
 
-	if (p_H264_Dpb->mSlice.structure == FRAME)
-		init_mbaff_lists(p_H264_Dpb, &p_H264_Dpb->mSlice);
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check structure\r\n");
+	if (p_H264_Dpb->mSlice.structure == FRAME) {
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "structure is FRAME\r\n");
+    init_mbaff_lists(p_H264_Dpb, &p_H264_Dpb->mSlice);
+  }
 
 	if (new_pic_flag)
 		return 1;
