@@ -5417,8 +5417,11 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
     init_mbaff_lists(p_H264_Dpb, &p_H264_Dpb->mSlice);
   }
 
-	if (new_pic_flag)
-		return 1;
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check new_pic_flag\r\n");
+	if (new_pic_flag) {
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "return 1\r\n");
+    return 1;
+  }
 
 	return 0;
 }
