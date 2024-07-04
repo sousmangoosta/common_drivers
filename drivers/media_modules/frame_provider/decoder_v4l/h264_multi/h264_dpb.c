@@ -5255,6 +5255,7 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 
 	p_H264_Dpb->buf_alloc_fail = 0;
 	p_H264_Dpb->dpb_error_flag = 0;
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "slice prepare\r\n");
 	slice_prepare(p_H264_Dpb, &p_H264_Dpb->mDPB, &p_H264_Dpb->mVideo,
 		      &p_H264_Dpb->mSPS, &p_H264_Dpb->mSlice);
 
