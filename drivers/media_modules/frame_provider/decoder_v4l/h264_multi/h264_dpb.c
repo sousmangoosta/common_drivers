@@ -5347,34 +5347,44 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 					currSlice);
 			}
 
+      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check buf_spec_num==-1\r\n");
 			if (p_H264_Dpb->mVideo.dec_picture->buf_spec_num ==
 				-1) {
+        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "is buf_spec_num==-1\r\n");
 				p_H264_Dpb->mVideo.dec_picture->buf_spec_num =
 					v4l_get_free_buf_idx(p_H264_Dpb->vdec);
+        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check buf_spec_num < 0\r\n");
 				if (p_H264_Dpb->mVideo.dec_picture->buf_spec_num
 					< 0) {
+          dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "is buf_spec_num < 0\r\n");
 					p_H264_Dpb->buf_alloc_fail = 1;
 					p_H264_Dpb->mVideo.dec_picture->buf_spec_is_alloced = 0;
 					p_Dpb->need_put_ref = 0;
 				} else {
+          dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set buf_spec_is_alloced\r\n");
 					p_H264_Dpb->mVideo.dec_picture->buf_spec_is_alloced = 1;
 					p_Dpb->need_put_ref = 1;
 				}
 
+        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check dec_picture used_for_reference\r\n");
 				if (p_H264_Dpb->mVideo.dec_picture->
 					used_for_reference) {
+          dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "is dec_picture used_for_reference\r\n");
 					p_H264_Dpb->mVideo.dec_picture->
 						colocated_buf_index =
 						allocate_colocate_buf(
 							p_H264_Dpb);
 				}
 			}
+      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check post_picture_early\r\n");
 			if (post_picture_early(p_H264_Dpb->vdec,
 				p_H264_Dpb->mVideo.dec_picture->buf_spec_num)) {
+        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "is post_picture_early\r\n");
 				pic_mutex_unlock(p_H264_Dpb);
 				return -1;
 			}
 		}
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "set pic_mutex_unlock\r\n");
 		pic_mutex_unlock(p_H264_Dpb);
 	}
 
