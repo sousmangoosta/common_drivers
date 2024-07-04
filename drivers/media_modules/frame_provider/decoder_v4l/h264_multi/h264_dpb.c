@@ -5394,12 +5394,19 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
     return -1;
   }
 
-	if (p_H264_Dpb->mSlice.slice_type == P_SLICE)
-		init_lists_p_slice(&p_H264_Dpb->mSlice);
-	else if (p_H264_Dpb->mSlice.slice_type == B_SLICE)
-		init_lists_b_slice(&p_H264_Dpb->mSlice);
-	else
-		init_lists_i_slice(&p_H264_Dpb->mSlice);
+  dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check slice_type\r\n");
+	if (p_H264_Dpb->mSlice.slice_type == P_SLICE) {
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "slice_type is P_SLICE\r\n");
+    init_lists_p_slice(&p_H264_Dpb->mSlice);
+  }
+	else if (p_H264_Dpb->mSlice.slice_type == B_SLICE) {
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "slice_type is B_SLICE\r\n");
+    init_lists_b_slice(&p_H264_Dpb->mSlice);
+  }
+	else {
+    dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "slice_type is I_SLICE\r\n");
+    init_lists_i_slice(&p_H264_Dpb->mSlice);
+  }
 
 	reorder_lists(&p_H264_Dpb->mSlice);
 
