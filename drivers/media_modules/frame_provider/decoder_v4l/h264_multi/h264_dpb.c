@@ -5319,6 +5319,7 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 				&p_H264_Dpb->mDPB;
 			struct StorablePicture *p =
 				p_H264_Dpb->mVideo.dec_picture;
+      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "init_picture\r\n");
 			init_picture(p_H264_Dpb, &p_H264_Dpb->mSlice,
 				p_H264_Dpb->mVideo.dec_picture);
 			/* rain */
@@ -5331,13 +5332,17 @@ int h264_slice_header_process(struct h264_dpb_stru *p_H264_Dpb, int *frame_num_g
 			p_H264_Dpb->mVideo.dec_picture->buf_spec_num  = -1;
 			p_H264_Dpb->mVideo.dec_picture->
 				colocated_buf_index = -1;
+      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "update_pic_num\r\n");
 			update_pic_num(p_H264_Dpb);
 
+      dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check currSlice->structure\r\n");
 			if ((currSlice->structure == TOP_FIELD) ||
 			    (currSlice->structure == BOTTOM_FIELD)) {
+        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "is currSlice->structure\r\n");
 				/* check for frame store with same
 				 *   pic_number
 				 */
+        dpb_print(p_H264_Dpb->decoder_index, PRINT_FLAG_DPB_DETAIL, "check_frame_store_same_pic_num\r\n");
 				check_frame_store_same_pic_num(p_Dpb, p,
 					currSlice);
 			}
